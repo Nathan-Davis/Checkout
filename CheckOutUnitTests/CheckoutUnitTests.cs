@@ -28,27 +28,24 @@ namespace CheckOutUnitTests
         [TestMethod]
         public void WhenItemIsEnteredWithWeightTotalIsUpdated()
         {
-            _pointOfSale.ScanItem("Banana", 1.3M);
-            _orderTotal = _pointOfSale.CalculateTotalForOrder();
-            Assert.AreEqual(_orderTotal, 3.354M);         
+            _orderTotal = _pointOfSale.ScanItem("Banana", 1.3M);
+            Assert.AreEqual(_orderTotal, 3.354M);
         }
 
         [TestMethod]
         public void WhenItemIsEnteredByEachesOrWeightTotalIsUpdated()
         {
-            _pointOfSale.ScanItem("Banana", 1.3M);
-            _pointOfSale.ScanItem("Apple", 1);
-            _orderTotal = _pointOfSale.CalculateTotalForOrder();
+            _orderTotal = _pointOfSale.ScanItem("Banana", 1.3M);
+            _orderTotal = _pointOfSale.ScanItem("Apple", 1);
             Assert.AreEqual(_orderTotal, 4.334M);
         }
 
         [TestMethod]
         public void WhenMarkDownIsAddedToItemTotalIsUpdatedByEaches()
         {
-            _pointOfSale.ScanItem("Milk");
             var markdown = .30M;
             _pointOfSale.MarkdownItem("Milk", markdown);
-            _orderTotal = _pointOfSale.CalculateTotalForOrder();
+            _orderTotal = _pointOfSale.ScanItem("Milk");          
             Assert.AreEqual(3.25M, _orderTotal);
         }
 
@@ -58,11 +55,11 @@ namespace CheckOutUnitTests
             _pointOfSale.ScanItem("Apple", .5M);
             var markdown = .30M;
             _pointOfSale.MarkdownItem("Apple", markdown);
-            _orderTotal = _pointOfSale.CalculateTotalForOrder();
-            Assert.AreEqual(.34M, _orderTotal);
+            _orderTotal = _pointOfSale.ScanItem("Apple", .5M);
+            Assert.AreEqual(.68M, _orderTotal);
         }
 
-        private List<PricingSheetItem> GetPricingSheet()
+        private static List<PricingSheetItem> GetPricingSheet()
         {
             var pricingSheet = new List<PricingSheetItem>
             {

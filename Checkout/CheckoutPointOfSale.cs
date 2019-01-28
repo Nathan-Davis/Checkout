@@ -8,24 +8,45 @@ namespace Checkout
 {
     public class CheckoutPointOfSale
     {
-        private List<PricingSheetItem> _pricingSheet;
-        private List<AOrderItem> _shoppingCart { get; set; }
+        private readonly List<PricingSheetItem> _pricingSheet;
+        private readonly Dictionary<string, AOrderItem> _shoppingCart = new Dictionary<string, AOrderItem>();
+        private readonly Dictionary<string, AOrderItem> _inventory = new Dictionary<string, AOrderItem>();
         public CheckoutPointOfSale(List<PricingSheetItem> pricingSheet)
         {
             _pricingSheet = pricingSheet;
             ImportItemsWithPricing();
         }
 
-        public void ScanItem(string name)
+        public decimal ScanItem(string name)
         {
-            var scannedItem = _shoppingCart.Where(item => item.GetName() == name).FirstOrDefault();
-            scannedItem.Quantity += 1;
+            if (_shoppingCart.ContainsKey(name))
+            {
+                var scannedItem = _shoppingCart[name];
+                scannedItem.Quantity += 1;
+            }
+            else
+            {
+                var inventoryItem = _inventory[name];
+                inventoryItem.Quantity += 1;
+                _shoppingCart.Add(inventoryItem.GetName(), inventoryItem);
+            }
+            return CalculateTotalForOrder();
         }
 
-        public void ScanItem(string name, decimal weight)
+        public decimal ScanItem(string name, decimal weight)
         {
-            var scannedItem = (OrderItemWeight)_shoppingCart.Where(item => item.GetName() == name).FirstOrDefault();
-            scannedItem.AddToWeight(weight);
+            if (_shoppingCart.ContainsKey(name))
+            {
+                var scannedItem = (OrderItemWeight)_shoppingCart[name];
+                scannedItem.AddToWeight(weight);
+            }
+            else
+            {
+                var inventoryItem = (OrderItemWeight)_inventory[name];
+                inventoryItem.AddToWeight(weight);
+                _shoppingCart.Add(inventoryItem.GetName(), inventoryItem);
+            }
+            return CalculateTotalForOrder();
         }
 
         public decimal CalculateTotalForOrder()
@@ -33,20 +54,19 @@ namespace Checkout
             var orderTotal = 0M;
             foreach (var item in _shoppingCart)
             {
-                orderTotal += item.CalculateTotal();
+                orderTotal += item.Value.CalculateTotal();
             }
             return orderTotal;
         }
 
         public void MarkdownItem(string name, decimal markdown)
         {
-            var orderItem = _shoppingCart.Where(item => item.GetName() == name).FirstOrDefault();
+            var orderItem = _shoppingCart.ContainsKey(name) ? _shoppingCart[name] : _inventory[name];
             orderItem.MarkdownPrice(markdown);
         }
 
         private void ImportItemsWithPricing()
         {
-            _shoppingCart = new List<AOrderItem>();
             foreach (var pricingSheetItem in _pricingSheet)
             {
                 AOrderItem orderItem;
@@ -59,7 +79,7 @@ namespace Checkout
                     orderItem = new OrderItemEaches(pricingSheetItem.GetName(), pricingSheetItem.GetPrice());
                 }
 
-                _shoppingCart.Add(orderItem);
+                _inventory.Add(pricingSheetItem.GetName(), orderItem);
             }
         }
 
