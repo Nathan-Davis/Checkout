@@ -20,12 +20,9 @@ namespace CheckOutUnitTests
         [TestMethod]
         public void WhenItemIsAddedTotalIsUpdated()
         {
-            _pointOfSale.ScanItem("Banana");
+            _pointOfSale.ScanItem("Banana", 1);
             _orderTotal = _pointOfSale.CalculateTotalForOrder();
             Assert.AreEqual(2.58M, _orderTotal);
-            _pointOfSale.ScanItem("Apple");
-            _orderTotal = _pointOfSale.CalculateTotalForOrder();
-            Assert.AreEqual(3.56M, _orderTotal);
         }
 
         [TestMethod]
@@ -40,25 +37,25 @@ namespace CheckOutUnitTests
         public void WhenItemIsEnteredByEachesOrWeightTotalIsUpdated()
         {
             _pointOfSale.ScanItem("Banana", 1.3M);
-            _pointOfSale.ScanItem("Apple");
+            _pointOfSale.ScanItem("Apple", 1);
             _orderTotal = _pointOfSale.CalculateTotalForOrder();
             Assert.AreEqual(_orderTotal, 4.334M);
         }
 
-        private Dictionary<string, decimal> GetPricingSheet()
+        private List<PricingSheetItem> GetPricingSheet()
         {
-            var pricingSheet = new Dictionary<string, decimal>
+            var pricingSheet = new List<PricingSheetItem>
             {
-                {"Banana", 2.58M },
-                {"Apple", 0.98M },
-                {"Milk", 3.55M },
-                {"Bread", 4.23M },
-                {"Cereal", 3.98M },
-                {"Water", 1M },
-                {"Cheese", 2.98M },
-                {"Tomato", .88M },
-                {"Lettuce", 2.99M },
-                {"Sugar", 4.98M }
+                new PricingSheetItem("Banana", 2.58M, true),
+                new PricingSheetItem("Apple", 0.98M, true),
+                new PricingSheetItem("Milk", 3.55M, false),
+                new PricingSheetItem("Bread", 4.23M, false),
+                new PricingSheetItem("Cereal", 3.98M, false),
+                new PricingSheetItem("Water", 1M, false),
+                new PricingSheetItem("Cheese", 2.98M, false),
+                new PricingSheetItem("Tomato", .88M, true),
+                new PricingSheetItem("Lettuce", 2.99M, true),
+                new PricingSheetItem("Sugar", 4.98M, false)
             };
 
             return pricingSheet;

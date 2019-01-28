@@ -8,9 +8,9 @@ namespace Checkout
 {
     public class CheckoutPointOfSale
     {
-        private Dictionary<string, decimal> _pricingSheet { get; set; }
-        private List<Item> _shoppingCart { get; set; }
-        public CheckoutPointOfSale(Dictionary<string, decimal> pricingSheet)
+        private List<PricingSheetItem> _pricingSheet;
+        private List<AOrderItem> _shoppingCart { get; set; }
+        public CheckoutPointOfSale(List<PricingSheetItem> pricingSheet)
         {
             _pricingSheet = pricingSheet;
             ImportItemsWithPricing();
@@ -18,14 +18,14 @@ namespace Checkout
 
         public void ScanItem(string name)
         {
-            var scannedItem = _shoppingCart.Where(item => item.RetrieveName() == name).FirstOrDefault();
+            var scannedItem = _shoppingCart.Where(item => item.GetName() == name).FirstOrDefault();
             scannedItem.Quantity += 1;
         }
 
         public void ScanItem(string name, decimal weight)
         {
-            var scannedItem = _shoppingCart.Where(item => item.RetrieveName() == name).FirstOrDefault();
-            scannedItem.Weight += weight;
+            var scannedItem = (OrderItemWeight)_shoppingCart.Where(item => item.GetName() == name).FirstOrDefault();
+            scannedItem.AddToWeight(weight);
         }
 
         public decimal CalculateTotalForOrder()
@@ -40,11 +40,20 @@ namespace Checkout
 
         private void ImportItemsWithPricing()
         {
-            _shoppingCart = new List<Item>();
-            foreach (var price in _pricingSheet)
+            _shoppingCart = new List<AOrderItem>();
+            foreach (var pricingSheetItem in _pricingSheet)
             {
-                var item = new Item(price.Key, price.Value);
-                _shoppingCart.Add(item);
+                AOrderItem orderItem;
+                if (pricingSheetItem.GetShouldItemPriceBeCaluclatedByWeight())
+                {
+                    orderItem = new OrderItemWeight(pricingSheetItem.GetName(), pricingSheetItem.GetPrice(), 0M);
+                }
+                else
+                {
+                    orderItem = new OrderItemEaches(pricingSheetItem.GetName(), pricingSheetItem.GetPrice());
+                }
+
+                _shoppingCart.Add(orderItem);
             }
         }
 
