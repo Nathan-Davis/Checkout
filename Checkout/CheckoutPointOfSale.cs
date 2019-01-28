@@ -40,11 +40,8 @@ namespace Checkout
 
         public void MarkdownItem(string name, decimal markdown)
         {
-            var orderItems = _shoppingCart.Where(item => item.GetName() == name);
-            foreach(var orderItem in orderItems)
-            {
-                orderItem.MarkdownPrice(markdown);
-            }
+            var orderItem = _shoppingCart.Where(item => item.GetName() == name).FirstOrDefault();
+            orderItem.MarkdownPrice(markdown);
         }
 
         private void ImportItemsWithPricing()
