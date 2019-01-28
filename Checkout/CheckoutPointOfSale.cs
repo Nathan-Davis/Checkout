@@ -22,6 +22,12 @@ namespace Checkout
             scannedItem.Quantity += 1;
         }
 
+        public void ScanItem(string name, decimal weight)
+        {
+            var scannedItem = _shoppingCart.Where(item => item.RetrieveName() == name).FirstOrDefault();
+            scannedItem.Weight += weight;
+        }
+
         public decimal CalculateTotalForOrder()
         {
             var orderTotal = 0M;

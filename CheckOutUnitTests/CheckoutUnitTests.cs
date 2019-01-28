@@ -9,21 +9,40 @@ namespace CheckOutUnitTests
     public class CheckoutUnitTests
     {
         private CheckoutPointOfSale _pointOfSale;
+        private decimal _orderTotal;
 
         [TestInitialize]
         public void InitializeTest()
         {
             _pointOfSale = new CheckoutPointOfSale(GetPricingSheet());
+            _orderTotal = 0M;
         }
         [TestMethod]
         public void WhenItemIsAddedTotalIsUpdated()
         {
             _pointOfSale.ScanItem("Banana");
-            var orderTotal = _pointOfSale.CalculateTotalForOrder();
-            Assert.AreEqual(2.58M, orderTotal);
+            _orderTotal = _pointOfSale.CalculateTotalForOrder();
+            Assert.AreEqual(2.58M, _orderTotal);
             _pointOfSale.ScanItem("Apple");
-            orderTotal = _pointOfSale.CalculateTotalForOrder();
-            Assert.AreEqual(3.56M, orderTotal);
+            _orderTotal = _pointOfSale.CalculateTotalForOrder();
+            Assert.AreEqual(3.56M, _orderTotal);
+        }
+
+        [TestMethod]
+        public void WhenItemIsEnteredWithWeightTotalIsUpdated()
+        {
+            _pointOfSale.ScanItem("Banana", 1.3M);
+            _orderTotal = _pointOfSale.CalculateTotalForOrder();
+            Assert.AreEqual(_orderTotal, 3.354M);         
+        }
+
+        [TestMethod]
+        public void WhenItemIsEnteredByEachesOrWeightTotalIsUpdated()
+        {
+            _pointOfSale.ScanItem("Banana", 1.3M);
+            _pointOfSale.ScanItem("Apple");
+            _orderTotal = _pointOfSale.CalculateTotalForOrder();
+            Assert.AreEqual(_orderTotal, 4.334M);
         }
 
         private Dictionary<string, decimal> GetPricingSheet()

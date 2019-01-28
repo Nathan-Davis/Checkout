@@ -19,9 +19,11 @@ namespace Checkout
 
         internal decimal Quantity { get; set; }
 
+        internal decimal Weight { get; set; }
+
         internal decimal CalculateTotal()
         {
-            return Quantity * _price;
+            return Weight == 0M ? Quantity * _price : Weight * _price;
         }
 
         internal string RetrieveName()
