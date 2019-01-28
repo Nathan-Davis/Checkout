@@ -15,7 +15,7 @@ namespace Checkout
         }
         internal override decimal CalculateTotal()
         {
-            return _weight * GetPrice();
+            return _weight * GetCurrentPrice();
         }
 
         internal decimal GetWeight()

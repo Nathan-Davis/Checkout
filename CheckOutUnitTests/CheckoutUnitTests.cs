@@ -42,6 +42,26 @@ namespace CheckOutUnitTests
             Assert.AreEqual(_orderTotal, 4.334M);
         }
 
+        [TestMethod]
+        public void WhenMarkDownIsAddedToItemTotalIsUpdatedByEaches()
+        {
+            _pointOfSale.ScanItem("Milk");
+            var markdown = .30M;
+            _pointOfSale.MarkdownItem("Milk", markdown);
+            _orderTotal = _pointOfSale.CalculateTotalForOrder();
+            Assert.AreEqual(3.25M, _orderTotal);
+        }
+
+        [TestMethod]
+        public void WhenMarkDownIsAddedToItemTotalIsUpdatedByWeight()
+        {
+            _pointOfSale.ScanItem("Apple", .5M);
+            var markdown = .30M;
+            _pointOfSale.MarkdownItem("Apple", markdown);
+            _orderTotal = _pointOfSale.CalculateTotalForOrder();
+            Assert.AreEqual(.34M, _orderTotal);
+        }
+
         private List<PricingSheetItem> GetPricingSheet()
         {
             var pricingSheet = new List<PricingSheetItem>

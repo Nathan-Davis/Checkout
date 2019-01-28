@@ -38,6 +38,15 @@ namespace Checkout
             return orderTotal;
         }
 
+        public void MarkdownItem(string name, decimal markdown)
+        {
+            var orderItems = _shoppingCart.Where(item => item.GetName() == name);
+            foreach(var orderItem in orderItems)
+            {
+                orderItem.MarkdownPrice(markdown);
+            }
+        }
+
         private void ImportItemsWithPricing()
         {
             _shoppingCart = new List<AOrderItem>();

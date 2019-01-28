@@ -9,12 +9,14 @@ namespace Checkout
     internal abstract class AOrderItem
     {
         private readonly string _itemName;
-        private readonly decimal _price;
+        private readonly decimal _originalPrice;
+        private decimal _currentPrice;
 
         internal AOrderItem(string itemName, decimal price)
         {
             _itemName = itemName;
-            _price = price;
+            _originalPrice = price;
+            _currentPrice = price;
         }
 
         internal decimal Quantity { get; set; }
@@ -26,9 +28,19 @@ namespace Checkout
             return _itemName;
         }
 
-        protected decimal GetPrice()
+        internal void MarkdownPrice(decimal markdown)
         {
-            return _price;
+            _currentPrice -= markdown;
+        }
+
+        protected decimal GetOriginalPrice()
+        {
+            return _originalPrice;
+        }
+
+        protected decimal GetCurrentPrice()
+        {
+            return _currentPrice;
         }
     }
 }

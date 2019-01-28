@@ -15,7 +15,7 @@ namespace Checkout
 
         internal override decimal CalculateTotal()
         {
-            return Quantity * GetPrice();
+            return Quantity * GetCurrentPrice();
         }
     }
 }
