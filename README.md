@@ -14,7 +14,7 @@ cd {path to Checkout directory}
 
 **To run tests from the Command Line:**
 
-You will have to use the full path of MSTest.exe. For Visual Studio 2017 it can normally be found here: 
+The full path for Visual Studio 2017 can normally be found here: 
 
 C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\MSTest.exe
 
