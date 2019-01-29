@@ -9,13 +9,25 @@ namespace Checkout.OrderItemImplementation
 
         }
 
+        private int _quantity { get; set; }
+
+        internal void AddLineItem()
+        {
+            _quantity += 1;
+        }
+
         internal override decimal CalculateTotal()
         {
             if (SpecialPricing != null)
             {
-                return SpecialPricing.CalculateSpecial(Quantity, GetCurrentPrice());
+                return SpecialPricing.CalculateSpecial(_quantity, GetCurrentPrice());
             }
-            return Quantity * GetCurrentPrice();
+            return _quantity * GetCurrentPrice();
+        }
+
+        internal override void VoidItem()
+        {
+            _quantity -= 1;
         }
     }
 }

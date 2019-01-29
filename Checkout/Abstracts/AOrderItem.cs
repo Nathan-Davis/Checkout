@@ -13,13 +13,12 @@ namespace Checkout.Abstracts
             _itemName = itemName;
             _originalPrice = price;
             _currentPrice = price;
-        }
-
-        internal int Quantity { get; set; }
+        }       
 
         internal ISpecialPricing SpecialPricing { get; set; }
 
-        internal abstract decimal CalculateTotal();       
+        internal abstract decimal CalculateTotal();
+        internal abstract void VoidItem();
 
         internal string GetName()
         {

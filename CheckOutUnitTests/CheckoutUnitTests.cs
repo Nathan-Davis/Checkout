@@ -110,6 +110,16 @@ namespace CheckOutUnitTests
             Assert.AreEqual(_orderTotal, 80.37M);
         }
 
+        [TestMethod]
+        public void WhenItemIsRemovedSpecialIsCalculatedCorrectly()
+        {
+            var pricingSpecial = new XForYSpecial() { QuantityToBuy = 3, SpecialPrice = 5 };
+            _pointOfSale.AddPricingSpecial("Bread", pricingSpecial);
+            ScanItemMultipleTimes("Bread", 3);
+            Assert.AreEqual(_orderTotal, 5M);
+            _orderTotal = _pointOfSale.LineItemVoid("Bread");
+            Assert.AreEqual(_orderTotal, 8.46M);
+        }
         private static List<PricingSheetItem> GetPricingSheet()
         {
             var pricingSheet = new List<PricingSheetItem>

@@ -20,9 +20,9 @@ namespace Checkout.OrderItemImplementation
             return _weight * GetCurrentPrice();
         }
 
-        internal decimal GetWeight()
+        internal override void VoidItem()
         {
-            return _weight;
+            _weight = 0M;
         }        
     }
 }

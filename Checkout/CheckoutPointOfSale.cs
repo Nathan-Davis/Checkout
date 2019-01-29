@@ -38,6 +38,17 @@ namespace Checkout
             return orderTotal;
         }
 
+        public decimal LineItemVoid(string name)
+        {
+            if (_shoppingCart.ContainsKey(name))
+            {
+                var scannedItem = _shoppingCart[name];
+                scannedItem.VoidItem();
+            }
+
+            return CalculateTotalForOrder();
+        }
+
         public void MarkdownItem(string name, decimal markdown)
         {
             var orderItem = GetItemFromShoppingCartOrInventory(name);
@@ -48,13 +59,13 @@ namespace Checkout
         {
             if (_shoppingCart.ContainsKey(name))
             {
-                var scannedItem = _shoppingCart[name];
-                scannedItem.Quantity += 1;
+                var scannedItem = (OrderItemEaches)_shoppingCart[name];
+                scannedItem.AddLineItem();
             }
             else
             {
                 var inventoryItem = _inventory.GetOrderItemEaches(name);
-                inventoryItem.Quantity += 1;
+                inventoryItem.AddLineItem();
                 _shoppingCart.Add(inventoryItem.GetName(), inventoryItem);
             }
             return CalculateTotalForOrder();
@@ -75,7 +86,7 @@ namespace Checkout
             }
             return CalculateTotalForOrder();
         }
-                     
+
         private AOrderItem GetItemFromShoppingCartOrInventory(string name)
         {
             return _shoppingCart.ContainsKey(name) ? _shoppingCart[name] : _inventory.GetOrderItem(name);
