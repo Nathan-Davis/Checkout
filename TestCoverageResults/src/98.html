@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>c:\github\checkout\checkoutunittests\checkoutunittests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using Checkout;
+using Checkout.SpecialPricingImplementation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace CheckOutUnitTests
+{
+    [TestClass]
+    public class CheckoutUnitTests
+    {
+        private CheckoutPointOfSale _pointOfSale;
+        private decimal _orderTotal;
+
+        [TestInitialize]
+        public void InitializeTest()
+        {
+            _pointOfSale = new CheckoutPointOfSale(GetPricingSheet());
+            _orderTotal = 0M;
+        }
+        [TestMethod]
+        public void WhenItemIsAddedTotalIsUpdated()
+        {
+            _pointOfSale.ScanItem(&quot;Banana&quot;, 1);
+            _orderTotal = _pointOfSale.CalculateTotalForOrder();
+            Assert.AreEqual(2.58M, _orderTotal);
+        }
+
+        [TestMethod]
+        public void WhenItemIsEnteredWithWeightTotalIsUpdated()
+        {
+            _orderTotal = _pointOfSale.ScanItem(&quot;Banana&quot;, 1.3M);
+            Assert.AreEqual(_orderTotal, 3.354M);
+        }
+
+        [TestMethod]
+        public void WhenItemIsEnteredByEachesOrWeightTotalIsUpdated()
+        {
+            _orderTotal = _pointOfSale.ScanItem(&quot;Banana&quot;, 1.3M);
+            _orderTotal = _pointOfSale.ScanItem(&quot;Apple&quot;, 1);
+            Assert.AreEqual(_orderTotal, 4.334M);
+        }
+
+        [TestMethod]
+        public void WhenMarkDownIsAddedToItemTotalIsUpdatedByEaches()
+        {
+            var markdown = .30M;
+            _pointOfSale.MarkdownItem(&quot;Milk&quot;, markdown);
+            _orderTotal = _pointOfSale.ScanItem(&quot;Milk&quot;);
+            Assert.AreEqual(3.25M, _orderTotal);
+        }
+
+        [TestMethod]
+        public void WhenMarkDownIsAddedToItemTotalIsUpdatedByWeight()
+        {
+            _pointOfSale.ScanItem(&quot;Apple&quot;, .5M);
+            var markdown = .30M;
+            _pointOfSale.MarkdownItem(&quot;Apple&quot;, markdown);
+            _orderTotal = _pointOfSale.ScanItem(&quot;Apple&quot;, .5M);
+            Assert.AreEqual(.68M, _orderTotal);
+        }
+
+        [TestMethod]
+        public void WhenShoppingCartIsLargePerformanceIsntGreatlyImpacted()
+        {
+            var watch = new Stopwatch();
+            watch.Start();
+            for (var i = 0; i &lt; 1000; i++)
+            {
+                _orderTotal = ScanEntireInventory();
+            }
+            Assert.IsTrue(watch.Elapsed &lt; new TimeSpan(0, 0, 1));
+        }
+
+        [TestMethod]
+        public void WhenABogoSpecialIsAddedTheOrderTotalIsAdjusted()
+        {
+            var pricingSpecial = new BogoSpecialEaches { QuantityToBuy = 2M, QuantityDiscounted = 2M, Discount = .50M };
+            _pointOfSale.AddPricingSpecial(&quot;Water&quot;, pricingSpecial);
+            ScanItemMultipleTimes(&quot;Water&quot;, 21);
+            Assert.AreEqual(_orderTotal, 16M);
+        }
+
+        [TestMethod]
+        public void WhenAnXForYSpecialIsAddedTheOrderTotalIsAdjusted()
+        {
+            var pricingSpecial = new XForYSpecial { QuantityToBuy = 3, SpecialPrice = 10M };
+            _pointOfSale.AddPricingSpecial(&quot;Bread&quot;, pricingSpecial);
+            ScanItemMultipleTimes(&quot;Bread&quot;, 8);
+            Assert.AreEqual(_orderTotal, 28.46M);
+        }
+
+        [TestMethod]
+        public void WhenALimitIsAddedToXForYSpecialTotalIsAdjusted()
+        {
+            var pricingSpecial = new XForYSpecial { QuantityToBuy = 3, SpecialPrice = 1, Limit = 6 };
+            _pointOfSale.AddPricingSpecial(&quot;Water&quot;, pricingSpecial);
+            ScanItemMultipleTimes(&quot;Water&quot;, 9);
+            Assert.AreEqual(_orderTotal, 5M);
+        }
+
+        [TestMethod]
+        public void WhenALimitIsAddedToBogoSpecialTotalIsAdjusted()
+        {
+            var pricingSpecial = new BogoSpecialEaches() { QuantityToBuy = 3, QuantityDiscounted = 1, Discount = 0, Limit = 4 };
+            _pointOfSale.AddPricingSpecial(&quot;Bread&quot;, pricingSpecial);
+            ScanItemMultipleTimes(&quot;Bread&quot;, 20);
+            Assert.AreEqual(_orderTotal, 80.37M);
+        }
+
+        [TestMethod]
+        public void WhenItemIsRemovedSpecialIsCalculatedCorrectly()
+        {
+            var pricingSpecial = new XForYSpecial() { QuantityToBuy = 3, SpecialPrice = 5 };
+            _pointOfSale.AddPricingSpecial(&quot;Bread&quot;, pricingSpecial);
+            ScanItemMultipleTimes(&quot;Bread&quot;, 3);
+            Assert.AreEqual(_orderTotal, 5M);
+            _orderTotal = _pointOfSale.LineItemVoid(&quot;Bread&quot;);
+            Assert.AreEqual(_orderTotal, 8.46M);
+        }
+
+        [TestMethod]
+        public void WhenBogoForEqualOrLesserValueIsAddedTotalIsAdjusted()
+        {
+            var pricingSpecial = new BogoForEqualOrLesserSpecialWeight { WeightToBuy = 10M, Discount = .50M };
+            _pointOfSale.AddPricingSpecial(&quot;Banana&quot;, pricingSpecial);
+            _orderTotal = _pointOfSale.ScanItem(&quot;Banana&quot;, 21M);
+            Assert.AreEqual(_orderTotal, 41.28M);
+        }
+
+        [TestMethod]
+        public void WhenWeightedItemIsVoidedTotalIsAdjusted()
+        {
+            _orderTotal = _pointOfSale.ScanItem(&quot;Banana&quot;, 1M);
+            Assert.AreEqual(_orderTotal, 2.58M);
+            _orderTotal = _pointOfSale.LineItemVoid(&quot;Banana&quot;);
+            Assert.AreEqual(_orderTotal, 0M);
+        }
+        private static List&lt;PricingSheetItem&gt; GetPricingSheet()
+        {
+            var pricingSheet = new List&lt;PricingSheetItem&gt;
+            {
+                new PricingSheetItem(&quot;Banana&quot;, 2.58M, true),
+                new PricingSheetItem(&quot;Apple&quot;, 0.98M, true),
+                new PricingSheetItem(&quot;Milk&quot;, 3.55M, false),
+                new PricingSheetItem(&quot;Bread&quot;, 4.23M, false),
+                new PricingSheetItem(&quot;Cereal&quot;, 3.98M, false),
+                new PricingSheetItem(&quot;Water&quot;, 1M, false),
+                new PricingSheetItem(&quot;Cheese&quot;, 2.98M, false),
+                new PricingSheetItem(&quot;Tomato&quot;, .88M, true),
+                new PricingSheetItem(&quot;Lettuce&quot;, 2.99M, true),
+                new PricingSheetItem(&quot;Sugar&quot;, 4.98M, false)
+            };
+
+            return pricingSheet;
+        }
+
+        private decimal ScanEntireInventory()
+        {
+            var pricingSheet = GetPricingSheet();
+            foreach (var pricingSheetItem in pricingSheet)
+            {
+                _orderTotal = pricingSheetItem.GetShouldItemPriceBeCaluclatedByWeight() ? _pointOfSale.ScanItem(pricingSheetItem.GetName(), .25M) :
+                    _pointOfSale.ScanItem(pricingSheetItem.GetName());
+            }
+            return _orderTotal;
+        }
+
+        private void ScanItemMultipleTimes(string name, int numberOfTimesToScan)
+        {
+            for (var i = 0; i &lt; numberOfTimesToScan; i++)
+            {
+                _orderTotal = _pointOfSale.ScanItem(name);
+            }
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[19,9,19,10,1],[20,13,20,71,1],[21,13,21,30,1],[22,9,22,10,1],[25,9,25,10,1],[26,13,26,48,1],[27,13,27,65,1],[28,13,28,49,1],[29,9,29,10,1],[33,9,33,10,1],[34,13,34,65,1],[35,13,35,50,1],[36,9,36,10,1],[40,9,40,10,1],[41,13,41,65,1],[42,13,42,61,1],[43,13,43,50,1],[44,9,44,10,1],[48,9,48,10,1],[49,13,49,33,1],[50,13,50,57,1],[51,13,51,57,1],[52,13,52,49,1],[53,9,53,10,1],[57,9,57,10,1],[58,13,58,49,1],[59,13,59,33,1],[60,13,60,58,1],[61,13,61,63,1],[62,13,62,48,1],[63,9,63,10,1],[67,9,67,10,1],[68,13,68,41,1],[69,13,69,27,1],[70,18,70,27,1],[70,29,70,37,1],[70,39,70,42,1],[71,13,71,14,1],[72,17,72,53,1],[73,13,73,14,1],[74,13,74,66,1],[75,9,75,10,1],[79,9,79,10,1],[80,13,80,121,1],[81,13,81,69,1],[82,13,82,48,1],[83,13,83,47,1],[84,9,84,10,1],[88,9,88,10,1],[89,13,89,93,1],[90,13,90,69,1],[91,13,91,47,1],[92,13,92,50,1],[93,9,93,10,1],[97,9,97,10,1],[98,13,98,102,1],[99,13,99,69,1],[100,13,100,47,1],[101,13,101,46,1],[102,9,102,10,1],[106,9,106,10,1],[107,13,107,129,1],[108,13,108,69,1],[109,13,109,48,1],[110,13,110,50,1],[111,9,111,10,1],[115,9,115,10,1],[116,13,116,93,1],[117,13,117,69,1],[118,13,118,47,1],[119,13,119,46,1],[120,13,120,62,1],[121,13,121,49,1],[122,9,122,10,1],[126,9,126,10,1],[127,13,127,111,1],[128,13,128,70,1],[129,13,129,64,1],[130,13,130,50,1],[131,9,131,10,1],[135,9,135,10,1],[136,13,136,63,1],[137,13,137,49,1],[138,13,138,63,1],[139,13,139,46,1],[140,9,140,10,1],[142,9,142,10,1],[143,13,155,15,1],[157,13,157,33,1],[158,9,158,10,1],[161,9,161,10,1],[162,13,162,50,1],[163,13,163,20,1],[163,22,163,42,1],[163,43,163,45,1],[163,46,163,58,1],[164,13,164,14,1],[165,17,166,71,1],[167,13,167,14,1],[168,13,168,32,1],[169,9,169,10,1],[172,9,172,10,1],[173,18,173,27,1],[173,29,173,52,1],[173,54,173,57,1],[174,13,174,14,1],[175,17,175,59,1],[176,13,176,14,1],[177,9,177,10,1]]);
+    </script>
+  </body>
+</html>

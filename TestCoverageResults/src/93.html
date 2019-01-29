@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>c:\github\checkout\checkout\specialpricingimplementation\bogoforequalorlesserspecialweight.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Checkout.Interfaces;
+
+namespace Checkout.SpecialPricingImplementation
+{
+    public class BogoForEqualOrLesserSpecialWeight : ISpecialPricing
+    {
+        private decimal _total;
+        public decimal Discount { get; set; }
+        public decimal WeightToBuy { get; set; }      
+        
+        public decimal CalculateSpecial(decimal weight, decimal currentPrice)
+        {
+            if (weight &gt;= WeightToBuy)
+            {
+                var weightLeftover = weight - WeightToBuy;
+                var heavierItem = weightLeftover &gt; WeightToBuy ? weightLeftover : WeightToBuy;
+                var lighterItem = weightLeftover &lt; WeightToBuy ? weightLeftover : WeightToBuy;
+                _total += heavierItem * currentPrice;
+                _total += lighterItem * currentPrice * Discount;
+            }
+            else
+            {
+                _total = weight * currentPrice;
+            }
+
+            return _total;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,35,13,39,1],[13,40,13,44,1],[14,38,14,42,1],[14,43,14,47,1],[17,9,17,10,1],[18,13,18,39,1],[19,13,19,14,1],[20,17,20,59,1],[21,17,21,95,1],[22,17,22,95,1],[23,17,23,54,1],[24,17,24,65,1],[25,13,25,14,1],[27,13,27,14,1],[28,17,28,48,1],[29,13,29,14,1],[31,13,31,27,1],[32,9,32,10,1]]);
+    </script>
+  </body>
+</html>

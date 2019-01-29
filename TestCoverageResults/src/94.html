@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>c:\github\checkout\checkout\pricingsheetitem.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+
+namespace Checkout
+{
+    public class PricingSheetItem
+    {
+        private readonly string _itemName;
+        private readonly decimal _itemPrice;
+        private readonly bool _shouldItemPriceBeCalculatedByWeight;
+
+        public PricingSheetItem(string itemName, decimal itemPrice, bool shouldItemPriceBeCalculatedByWeight)
+        {
+            _itemName = itemName;
+            _itemPrice = itemPrice;
+            _shouldItemPriceBeCalculatedByWeight = shouldItemPriceBeCalculatedByWeight;
+        }
+        
+        public string GetName()
+        {
+            return _itemName;
+        }
+
+        public decimal GetPrice()
+        {
+            return _itemPrice;
+        }
+        public bool GetShouldItemPriceBeCaluclatedByWeight()
+        {
+            return _shouldItemPriceBeCalculatedByWeight;
+        }        
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,9,10,110,1],[11,9,11,10,1],[12,13,12,34,1],[13,13,13,36,1],[14,13,14,88,1],[15,9,15,10,1],[18,9,18,10,1],[19,13,19,30,1],[20,9,20,10,1],[23,9,23,10,1],[24,13,24,31,1],[25,9,25,10,1],[27,9,27,10,1],[28,13,28,57,1],[29,9,29,10,1]]);
+    </script>
+  </body>
+</html>

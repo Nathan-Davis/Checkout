@@ -32,7 +32,7 @@ namespace CheckOutUnitTests
         public void WhenItemIsEnteredWithWeightTotalIsUpdated()
         {
             _orderTotal = _pointOfSale.ScanItem("Banana", 1.3M);
-            Assert.AreEqual(_orderTotal, 3.354M);
+            Assert.AreEqual(3.354M, _orderTotal);
         }
 
         [TestMethod]
@@ -40,7 +40,7 @@ namespace CheckOutUnitTests
         {
             _orderTotal = _pointOfSale.ScanItem("Banana", 1.3M);
             _orderTotal = _pointOfSale.ScanItem("Apple", 1);
-            Assert.AreEqual(_orderTotal, 4.334M);
+            Assert.AreEqual(4.334M, _orderTotal);
         }
 
         [TestMethod]
@@ -77,19 +77,19 @@ namespace CheckOutUnitTests
         [TestMethod]
         public void WhenABogoSpecialIsAddedTheOrderTotalIsAdjusted()
         {
-            var pricingSpecial = new BogoSpecialEaches {QuantityToBuy = 2M, QuantityDiscounted = 2M, Discount = .50M };
+            var pricingSpecial = new BogoSpecialEaches { QuantityToBuy = 2M, QuantityDiscounted = 2M, Discount = .50M };
             _pointOfSale.AddPricingSpecial("Water", pricingSpecial);
             ScanItemMultipleTimes("Water", 21);
-            Assert.AreEqual(_orderTotal, 16M);
+            Assert.AreEqual(16M, _orderTotal);
         }
 
         [TestMethod]
         public void WhenAnXForYSpecialIsAddedTheOrderTotalIsAdjusted()
         {
-            var pricingSpecial = new XForYSpecial { QuantityToBuy = 3, SpecialPrice = 10M};
+            var pricingSpecial = new XForYSpecial { QuantityToBuy = 3, SpecialPrice = 10M };
             _pointOfSale.AddPricingSpecial("Bread", pricingSpecial);
             ScanItemMultipleTimes("Bread", 8);
-            Assert.AreEqual(_orderTotal, 28.46M);
+            Assert.AreEqual(28.46M, _orderTotal);
         }
 
         [TestMethod]
@@ -98,7 +98,7 @@ namespace CheckOutUnitTests
             var pricingSpecial = new XForYSpecial { QuantityToBuy = 3, SpecialPrice = 1, Limit = 6 };
             _pointOfSale.AddPricingSpecial("Water", pricingSpecial);
             ScanItemMultipleTimes("Water", 9);
-            Assert.AreEqual(_orderTotal, 5M);
+            Assert.AreEqual(5M, _orderTotal);
         }
 
         [TestMethod]
@@ -107,7 +107,7 @@ namespace CheckOutUnitTests
             var pricingSpecial = new BogoSpecialEaches() { QuantityToBuy = 3, QuantityDiscounted = 1, Discount = 0, Limit = 4 };
             _pointOfSale.AddPricingSpecial("Bread", pricingSpecial);
             ScanItemMultipleTimes("Bread", 20);
-            Assert.AreEqual(_orderTotal, 80.37M);
+            Assert.AreEqual(80.37M, _orderTotal);
         }
 
         [TestMethod]
@@ -116,9 +116,9 @@ namespace CheckOutUnitTests
             var pricingSpecial = new XForYSpecial() { QuantityToBuy = 3, SpecialPrice = 5 };
             _pointOfSale.AddPricingSpecial("Bread", pricingSpecial);
             ScanItemMultipleTimes("Bread", 3);
-            Assert.AreEqual(_orderTotal, 5M);
+            Assert.AreEqual(5M, _orderTotal);
             _orderTotal = _pointOfSale.LineItemVoid("Bread");
-            Assert.AreEqual(_orderTotal, 8.46M);
+            Assert.AreEqual(8.46M, _orderTotal);
         }
 
         [TestMethod]
@@ -127,7 +127,19 @@ namespace CheckOutUnitTests
             var pricingSpecial = new BogoForEqualOrLesserSpecialWeight { WeightToBuy = 10M, Discount = .50M };
             _pointOfSale.AddPricingSpecial("Banana", pricingSpecial);
             _orderTotal = _pointOfSale.ScanItem("Banana", 21M);
-            Assert.AreEqual(_orderTotal, 41.28M);
+            Assert.AreEqual(41.28M, _orderTotal);
+            _pointOfSale.LineItemVoid("Banana");
+            _orderTotal = _pointOfSale.ScanItem("Banana", 9M);
+            Assert.AreEqual(23.22M, _orderTotal);
+        }
+
+        [TestMethod]
+        public void WhenWeightedItemIsVoidedTotalIsAdjusted()
+        {
+            _orderTotal = _pointOfSale.ScanItem("Banana", 1M);
+            Assert.AreEqual(2.58M, _orderTotal);
+            _orderTotal = _pointOfSale.LineItemVoid("Banana");
+            Assert.AreEqual(0M, _orderTotal);
         }
         private static List<PricingSheetItem> GetPricingSheet()
         {

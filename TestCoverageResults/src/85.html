@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>c:\github\checkout\checkout\orderitemimplementation\orderitemeaches.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Checkout.Abstracts;
+
+namespace Checkout.OrderItemImplementation
+{
+    internal class OrderItemEaches : AOrderItem
+    {
+        internal OrderItemEaches(string itemName, decimal price) : base(itemName, price)
+        {
+
+        }
+
+        private decimal _quantity;
+
+        internal void AddLineItem()
+        {
+            _quantity += 1M;
+        }
+
+        internal override decimal CalculateTotal()
+        {
+            if (SpecialPricing != null)
+            {
+                return SpecialPricing.CalculateSpecial(_quantity, GetCurrentPrice());
+            }
+            return _quantity * GetCurrentPrice();
+        }
+
+        internal override void VoidItem()
+        {
+            _quantity -= 1M;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[7,68,7,89,1],[8,9,8,10,1],[10,9,10,10,1],[15,9,15,10,1],[16,13,16,29,1],[17,9,17,10,1],[20,9,20,10,1],[21,13,21,40,1],[22,13,22,14,1],[23,17,23,86,1],[25,13,25,50,1],[26,9,26,10,1],[29,9,29,10,1],[30,13,30,29,1],[31,9,31,10,1]]);
+    </script>
+  </body>
+</html>

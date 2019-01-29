@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>c:\github\checkout\checkout\orderitemimplementation\orderitemweight.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Checkout.Abstracts;
+
+namespace Checkout.OrderItemImplementation
+{
+    internal class OrderItemWeight : AOrderItem
+    {
+        private decimal _weight;
+        internal OrderItemWeight(string itemName, decimal price, decimal weight) : base(itemName, price)
+        {
+            _weight = weight;
+        }
+
+        internal void AddToWeight(decimal weightToBeAdded)
+        {
+            _weight += weightToBeAdded;
+        }
+
+        internal override decimal CalculateTotal()
+        {
+            if (SpecialPricing != null)
+            {
+                return SpecialPricing.CalculateSpecial(_weight, GetCurrentPrice());
+            }
+            return _weight * GetCurrentPrice();
+        }
+
+        internal override void VoidItem()
+        {
+            _weight = 0M;
+        }        
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,84,8,105,1],[9,9,9,10,1],[10,13,10,30,1],[11,9,11,10,1],[14,9,14,10,1],[15,13,15,40,1],[16,9,16,10,1],[19,9,19,10,1],[20,13,20,40,1],[21,13,21,14,1],[22,17,22,84,1],[24,13,24,48,1],[25,9,25,10,1],[28,9,28,10,1],[29,13,29,26,1],[30,9,30,10,1]]);
+    </script>
+  </body>
+</html>

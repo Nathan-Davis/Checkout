@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>c:\github\checkout\checkout\inventory.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Collections.Generic;
+using Checkout.Abstracts;
+using Checkout.OrderItemImplementation;
+
+namespace Checkout
+{
+    internal class Inventory
+    {
+        private readonly Dictionary&lt;string, AOrderItem&gt; _inventory = new Dictionary&lt;string, AOrderItem&gt;();
+        private readonly List&lt;PricingSheetItem&gt; _pricingSheet;
+        
+        internal Inventory(List&lt;PricingSheetItem&gt; pricingSheet)
+        {
+            _pricingSheet = pricingSheet;
+            ImportItemsWithPricing();
+        }
+
+        internal AOrderItem GetOrderItem(string name)
+        {
+            return _inventory[name];
+        }
+
+        internal OrderItemEaches GetOrderItemEaches(string name)
+        {
+            return (OrderItemEaches)_inventory[name];
+        }
+
+        internal OrderItemWeight GetOrderItemWeight(string name)
+        {
+            return (OrderItemWeight)_inventory[name];
+        }
+
+        private void ImportItemsWithPricing()
+        {
+            foreach (var pricingSheetItem in _pricingSheet)
+            {
+                AOrderItem orderItem;
+                if (pricingSheetItem.GetShouldItemPriceBeCaluclatedByWeight())
+                {
+                    orderItem = new OrderItemWeight(pricingSheetItem.GetName(), pricingSheetItem.GetPrice(), 0M);
+                }
+                else
+                {
+                    orderItem = new OrderItemEaches(pricingSheetItem.GetName(), pricingSheetItem.GetPrice());
+                }
+
+                _inventory.Add(pricingSheetItem.GetName(), orderItem);
+            }
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,9,9,107,1],[12,9,12,64,1],[13,9,13,10,1],[14,13,14,42,1],[15,13,15,38,1],[16,9,16,10,1],[19,9,19,10,1],[20,13,20,37,1],[21,9,21,10,1],[24,9,24,10,1],[25,13,25,54,1],[26,9,26,10,1],[29,9,29,10,1],[30,13,30,54,1],[31,9,31,10,1],[34,9,34,10,1],[35,13,35,20,1],[35,22,35,42,1],[35,43,35,45,1],[35,46,35,59,1],[36,13,36,14,1],[38,17,38,79,1],[39,17,39,18,1],[40,21,40,114,1],[41,17,41,18,1],[43,17,43,18,1],[44,21,44,110,1],[45,17,45,18,1],[47,17,47,71,1],[48,13,48,14,1],[49,9,49,10,1]]);
+    </script>
+  </body>
+</html>

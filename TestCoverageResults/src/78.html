@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>c:\github\checkout\checkout\specialpricingimplementation\bogospecialeaches.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Checkout.Interfaces;
+
+namespace Checkout.SpecialPricingImplementation
+{
+    public class BogoSpecialEaches : ISpecialPricing
+    {
+        private decimal _total;
+        public decimal Discount { get; set; }
+        public decimal Limit { get; set; }
+        public decimal QuantityDiscounted { get; set; }
+        public decimal QuantityToBuy { get; set; }
+
+        public decimal CalculateSpecial(decimal quantityScanned, decimal currentPrice)
+        {
+            _total = 0M;
+            quantityScanned = ProcessLimitOnSpecial(quantityScanned, currentPrice);
+            var quantityLeftover = quantityScanned - QuantityToBuy;
+            if (quantityLeftover &gt; 0)
+            {
+                CalculateBogo(quantityScanned, currentPrice);
+            }
+            else
+            {
+                CalculateNormalPricing(quantityScanned, currentPrice);
+            }
+            return _total;
+        }
+        
+        private void CalculateAmountOverBundle(decimal quantityLeftOver, decimal currentPrice)
+        {
+            quantityLeftOver -= QuantityToBuy;
+            _total += QuantityToBuy * currentPrice;
+            if (quantityLeftOver &gt;= QuantityDiscounted)
+            {
+                quantityLeftOver -= QuantityDiscounted;
+                _total += QuantityDiscounted * currentPrice * Discount;
+                CalculateBogo(quantityLeftOver, currentPrice);
+            }
+            else
+            {
+                _total += quantityLeftOver * Discount;
+            }
+        }
+
+        private void CalculateBogo(decimal quantityLeftOver, decimal currentPrice)
+        {
+            if (quantityLeftOver &gt;= QuantityToBuy)
+            {
+                CalculateAmountOverBundle(quantityLeftOver, currentPrice);
+            }
+            else
+            {
+                _total += quantityLeftOver * currentPrice;
+            }
+        }
+        
+        private void CalculateNormalPricing(decimal quantityScanned, decimal currentPrice)
+        {
+            _total += currentPrice * quantityScanned;
+        }
+
+        private decimal ProcessLimitOnSpecial(decimal quantityScanned, decimal currentPrice)
+        {
+            if (Limit &gt; 0 &amp;&amp; quantityScanned &gt; Limit)
+            {
+                _total += (quantityScanned - Limit) * currentPrice;
+                quantityScanned = Limit;
+            }
+
+            return quantityScanned;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,35,8,39,1],[8,40,8,44,1],[9,32,9,36,1],[9,37,9,41,1],[10,45,10,49,1],[10,50,10,54,1],[11,40,11,44,1],[11,45,11,49,1],[14,9,14,10,1],[15,13,15,25,1],[16,13,16,84,1],[17,13,17,68,1],[18,13,18,38,1],[19,13,19,14,1],[20,17,20,62,1],[21,13,21,14,1],[23,13,23,14,1],[24,17,24,71,1],[25,13,25,14,1],[26,13,26,27,1],[27,9,27,10,1],[30,9,30,10,1],[31,13,31,47,1],[32,13,32,52,1],[33,13,33,56,1],[34,13,34,14,1],[35,17,35,56,1],[36,17,36,72,1],[37,17,37,63,1],[38,13,38,14,1],[40,13,40,14,1],[41,17,41,55,1],[42,13,42,14,1],[43,9,43,10,1],[46,9,46,10,1],[47,13,47,51,1],[48,13,48,14,1],[49,17,49,75,1],[50,13,50,14,1],[52,13,52,14,1],[53,17,53,59,1],[54,13,54,14,1],[55,9,55,10,1],[58,9,58,10,1],[59,13,59,54,1],[60,9,60,10,1],[63,9,63,10,1],[64,13,64,54,1],[65,13,65,14,1],[66,17,66,68,1],[67,17,67,41,1],[68,13,68,14,1],[70,13,70,36,1],[71,9,71,10,1]]);
+    </script>
+  </body>
+</html>
