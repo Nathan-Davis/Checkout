@@ -92,6 +92,24 @@ namespace CheckOutUnitTests
             Assert.AreEqual(_orderTotal, 28.46M);
         }
 
+        [TestMethod]
+        public void WhenALimitIsAddedToXForYSpecialTotalIsAdjusted()
+        {
+            var pricingSpecial = new XForYSpecial { QuantityToBuy = 3, SpecialPrice = 1M, Limit = 6 };
+            _pointOfSale.AddPricingSpecial("Water", pricingSpecial);
+            ScanItemMultipleTimes("Water", 9);
+            Assert.AreEqual(_orderTotal, 5M);
+        }
+
+        [TestMethod]
+        public void WhenALimitIsAddedToBogoSpecialTotalIsAdjusted()
+        {
+            var pricingSpecial = new BogoSpecial() { QuantityToBuy = 3, QuantityDiscounted = 1, Discount = 0M, Limit = 4 };
+            _pointOfSale.AddPricingSpecial("Bread", pricingSpecial);
+            ScanItemMultipleTimes("Bread", 20);
+            Assert.AreEqual(_orderTotal, 80.37M);
+        }
+
         private static List<PricingSheetItem> GetPricingSheet()
         {
             var pricingSheet = new List<PricingSheetItem>
