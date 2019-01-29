@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="CheckoutPointOfSale.cs" />
     <Compile Include="AOrderItem.cs" />
+    <Compile Include="Inventory.cs" />
     <Compile Include="OrderItemEaches.cs" />
     <Compile Include="OrderItemWeight.cs" />
     <Compile Include="PricingSheetItem.cs" />

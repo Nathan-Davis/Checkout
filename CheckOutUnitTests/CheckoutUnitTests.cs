@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using Checkout;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -45,7 +47,7 @@ namespace CheckOutUnitTests
         {
             var markdown = .30M;
             _pointOfSale.MarkdownItem("Milk", markdown);
-            _orderTotal = _pointOfSale.ScanItem("Milk");          
+            _orderTotal = _pointOfSale.ScanItem("Milk");
             Assert.AreEqual(3.25M, _orderTotal);
         }
 
@@ -57,6 +59,18 @@ namespace CheckOutUnitTests
             _pointOfSale.MarkdownItem("Apple", markdown);
             _orderTotal = _pointOfSale.ScanItem("Apple", .5M);
             Assert.AreEqual(.68M, _orderTotal);
+        }
+
+        [TestMethod]
+        public void WhenShoppingCartIsLargePerformanceIsntGreatlyImpacted()
+        {
+            var watch = new Stopwatch();
+            watch.Start();
+            for (var i = 0; i < 1000; i++)
+            {
+                _orderTotal = ScanEntireInventory();
+            }
+            Assert.IsTrue(watch.Elapsed < new TimeSpan(0, 0, 1));
         }
 
         private static List<PricingSheetItem> GetPricingSheet()
@@ -76,6 +90,17 @@ namespace CheckOutUnitTests
             };
 
             return pricingSheet;
+        }
+
+        private decimal ScanEntireInventory()
+        {
+            var pricingSheet = GetPricingSheet();
+            foreach (var pricingSheetItem in pricingSheet)
+            {
+                _orderTotal = pricingSheetItem.GetShouldItemPriceBeCaluclatedByWeight() ? _pointOfSale.ScanItem(pricingSheetItem.GetName(), .25M) :
+                    _pointOfSale.ScanItem(pricingSheetItem.GetName());
+            }
+            return _orderTotal;
         }
     }
 }

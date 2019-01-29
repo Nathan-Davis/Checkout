@@ -10,11 +10,12 @@ namespace Checkout
     {
         private readonly List<PricingSheetItem> _pricingSheet;
         private readonly Dictionary<string, AOrderItem> _shoppingCart = new Dictionary<string, AOrderItem>();
-        private readonly Dictionary<string, AOrderItem> _inventory = new Dictionary<string, AOrderItem>();
+
+        private readonly Inventory _inventory;
+
         public CheckoutPointOfSale(List<PricingSheetItem> pricingSheet)
         {
-            _pricingSheet = pricingSheet;
-            ImportItemsWithPricing();
+            _inventory = new Inventory(pricingSheet);
         }
 
         public decimal ScanItem(string name)
@@ -26,7 +27,7 @@ namespace Checkout
             }
             else
             {
-                var inventoryItem = _inventory[name];
+                var inventoryItem = _inventory.GetOrderItemEaches(name);
                 inventoryItem.Quantity += 1;
                 _shoppingCart.Add(inventoryItem.GetName(), inventoryItem);
             }
@@ -42,7 +43,7 @@ namespace Checkout
             }
             else
             {
-                var inventoryItem = (OrderItemWeight)_inventory[name];
+                var inventoryItem = _inventory.GetOrderItemWeight(name);
                 inventoryItem.AddToWeight(weight);
                 _shoppingCart.Add(inventoryItem.GetName(), inventoryItem);
             }
@@ -61,27 +62,8 @@ namespace Checkout
 
         public void MarkdownItem(string name, decimal markdown)
         {
-            var orderItem = _shoppingCart.ContainsKey(name) ? _shoppingCart[name] : _inventory[name];
+            var orderItem = _shoppingCart.ContainsKey(name) ? _shoppingCart[name] : _inventory.GetOrderItem(name);
             orderItem.MarkdownPrice(markdown);
         }
-
-        private void ImportItemsWithPricing()
-        {
-            foreach (var pricingSheetItem in _pricingSheet)
-            {
-                AOrderItem orderItem;
-                if (pricingSheetItem.GetShouldItemPriceBeCaluclatedByWeight())
-                {
-                    orderItem = new OrderItemWeight(pricingSheetItem.GetName(), pricingSheetItem.GetPrice(), 0M);
-                }
-                else
-                {
-                    orderItem = new OrderItemEaches(pricingSheetItem.GetName(), pricingSheetItem.GetPrice());
-                }
-
-                _inventory.Add(pricingSheetItem.GetName(), orderItem);
-            }
-        }
-
     }
 }
