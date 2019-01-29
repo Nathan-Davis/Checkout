@@ -60,10 +60,21 @@ namespace Checkout
             return orderTotal;
         }
 
+        public void AddPricingSpecial(string name, BogoSpecial pricingSpecial)
+        {
+            var scannedItem = GetItemFromShoppingCartOrInventory(name);
+            scannedItem.SpecialPricing = pricingSpecial;
+        }
+
         public void MarkdownItem(string name, decimal markdown)
         {
-            var orderItem = _shoppingCart.ContainsKey(name) ? _shoppingCart[name] : _inventory.GetOrderItem(name);
+            var orderItem = GetItemFromShoppingCartOrInventory(name);
             orderItem.MarkdownPrice(markdown);
+        }
+
+        private AOrderItem GetItemFromShoppingCartOrInventory(string name)
+        {
+            return _shoppingCart.ContainsKey(name) ? _shoppingCart[name] : _inventory.GetOrderItem(name);
         }
     }
 }

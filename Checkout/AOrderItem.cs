@@ -19,7 +19,9 @@ namespace Checkout
             _currentPrice = price;
         }
 
-        internal decimal Quantity { get; set; }
+        internal int Quantity { get; set; }
+
+        internal BogoSpecial SpecialPricing { get; set; }
 
         internal abstract decimal CalculateTotal();       
 

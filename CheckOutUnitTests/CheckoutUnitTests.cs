@@ -73,6 +73,15 @@ namespace CheckOutUnitTests
             Assert.IsTrue(watch.Elapsed < new TimeSpan(0, 0, 1));
         }
 
+        [TestMethod]
+        public void WhenABogoSpecialIsAddedTheOrderTotalIsAdjusted()
+        {
+            var pricingSpecial = new BogoSpecial {QuantityToBuy = 2, QuantityDiscounted = 2, Discount = .50M };
+            _pointOfSale.AddPricingSpecial("Water", pricingSpecial);
+            ScanItemMultipleTimes("Water", 21);
+            Assert.AreEqual(_orderTotal, 16M);
+        }
+
         private static List<PricingSheetItem> GetPricingSheet()
         {
             var pricingSheet = new List<PricingSheetItem>
@@ -101,6 +110,14 @@ namespace CheckOutUnitTests
                     _pointOfSale.ScanItem(pricingSheetItem.GetName());
             }
             return _orderTotal;
+        }
+
+        private void ScanItemMultipleTimes(string name, int numberOfTimesToScan)
+        {
+            for (var i = 0; i < numberOfTimesToScan; i++)
+            {
+                _orderTotal = _pointOfSale.ScanItem(name);
+            }
         }
     }
 }

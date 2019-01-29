@@ -15,6 +15,10 @@ namespace Checkout
 
         internal override decimal CalculateTotal()
         {
+            if (SpecialPricing != null)
+            {
+                return SpecialPricing.CalculateSpecial(Quantity, GetCurrentPrice());
+            }
             return Quantity * GetCurrentPrice();
         }
     }

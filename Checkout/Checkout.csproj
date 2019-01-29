@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BogoSpecial.cs" />
     <Compile Include="CheckoutPointOfSale.cs" />
     <Compile Include="AOrderItem.cs" />
     <Compile Include="Inventory.cs" />
