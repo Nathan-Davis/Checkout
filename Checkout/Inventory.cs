@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Checkout.Abstracts;
+using Checkout.OrderItemImplementation;
 
 namespace Checkout
 {

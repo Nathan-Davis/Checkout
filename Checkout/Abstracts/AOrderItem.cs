@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Checkout.Interfaces;
 
-namespace Checkout
+namespace Checkout.Abstracts
 {
     internal abstract class AOrderItem
     {
@@ -21,7 +17,7 @@ namespace Checkout
 
         internal int Quantity { get; set; }
 
-        internal BogoSpecial SpecialPricing { get; set; }
+        internal ISpecialPricing SpecialPricing { get; set; }
 
         internal abstract decimal CalculateTotal();       
 

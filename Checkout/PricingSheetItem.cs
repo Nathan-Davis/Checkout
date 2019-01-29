@@ -10,7 +10,7 @@ namespace Checkout
     {
         private readonly string _itemName;
         private readonly decimal _itemPrice;
-        private bool _shouldItemPriceBeCalculatedByWeight;
+        private readonly bool _shouldItemPriceBeCalculatedByWeight;
 
         public PricingSheetItem(string itemName, decimal itemPrice, bool shouldItemPriceBeCalculatedByWeight)
         {
@@ -31,16 +31,6 @@ namespace Checkout
         public bool GetShouldItemPriceBeCaluclatedByWeight()
         {
             return _shouldItemPriceBeCalculatedByWeight;
-        }
-
-        public void SetItemPriceCalculationByWeight()
-        {
-            _shouldItemPriceBeCalculatedByWeight = true;
-        }
-
-        public void SetItemPriceCalculationByEaches()
-        {
-            _shouldItemPriceBeCalculatedByWeight = false;
-        }
+        }        
     }
 }

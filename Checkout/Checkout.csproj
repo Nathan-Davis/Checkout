@@ -41,14 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BogoSpecial.cs" />
+    <Compile Include="SpecialPricingImplementation\BogoSpecial.cs" />
     <Compile Include="CheckoutPointOfSale.cs" />
-    <Compile Include="AOrderItem.cs" />
+    <Compile Include="Abstracts\AOrderItem.cs" />
     <Compile Include="Inventory.cs" />
-    <Compile Include="OrderItemEaches.cs" />
-    <Compile Include="OrderItemWeight.cs" />
+    <Compile Include="Interfaces\ISpecialPricing.cs" />
+    <Compile Include="OrderItemImplementation\OrderItemEaches.cs" />
+    <Compile Include="OrderItemImplementation\OrderItemWeight.cs" />
     <Compile Include="PricingSheetItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpecialPricingImplementation\XForYSpecial.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

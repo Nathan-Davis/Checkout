@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Checkout.Abstracts;
 
-namespace Checkout
+namespace Checkout.OrderItemImplementation
 {
     internal class OrderItemWeight : AOrderItem
     {
@@ -13,6 +9,12 @@ namespace Checkout
         {
             _weight = weight;
         }
+
+        internal void AddToWeight(decimal weightToBeAdded)
+        {
+            _weight += weightToBeAdded;
+        }
+
         internal override decimal CalculateTotal()
         {
             return _weight * GetCurrentPrice();
@@ -21,11 +23,6 @@ namespace Checkout
         internal decimal GetWeight()
         {
             return _weight;
-        }
-
-        internal void AddToWeight(decimal weightToBeAdded)
-        {
-            _weight += weightToBeAdded;
-        }
+        }        
     }
 }

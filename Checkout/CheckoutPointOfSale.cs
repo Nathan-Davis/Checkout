@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Checkout.Abstracts;
+using Checkout.Interfaces;
+using Checkout.OrderItemImplementation;
 
 namespace Checkout
 {
@@ -16,6 +19,29 @@ namespace Checkout
         public CheckoutPointOfSale(List<PricingSheetItem> pricingSheet)
         {
             _inventory = new Inventory(pricingSheet);
+        }
+
+
+        public void AddPricingSpecial(string name, ISpecialPricing pricingSpecial)
+        {
+            var scannedItem = GetItemFromShoppingCartOrInventory(name);
+            scannedItem.SpecialPricing = pricingSpecial;
+        }
+
+        public decimal CalculateTotalForOrder()
+        {
+            var orderTotal = 0M;
+            foreach (var item in _shoppingCart)
+            {
+                orderTotal += item.Value.CalculateTotal();
+            }
+            return orderTotal;
+        }
+
+        public void MarkdownItem(string name, decimal markdown)
+        {
+            var orderItem = GetItemFromShoppingCartOrInventory(name);
+            orderItem.MarkdownPrice(markdown);
         }
 
         public decimal ScanItem(string name)
@@ -49,29 +75,7 @@ namespace Checkout
             }
             return CalculateTotalForOrder();
         }
-
-        public decimal CalculateTotalForOrder()
-        {
-            var orderTotal = 0M;
-            foreach (var item in _shoppingCart)
-            {
-                orderTotal += item.Value.CalculateTotal();
-            }
-            return orderTotal;
-        }
-
-        public void AddPricingSpecial(string name, BogoSpecial pricingSpecial)
-        {
-            var scannedItem = GetItemFromShoppingCartOrInventory(name);
-            scannedItem.SpecialPricing = pricingSpecial;
-        }
-
-        public void MarkdownItem(string name, decimal markdown)
-        {
-            var orderItem = GetItemFromShoppingCartOrInventory(name);
-            orderItem.MarkdownPrice(markdown);
-        }
-
+                     
         private AOrderItem GetItemFromShoppingCartOrInventory(string name)
         {
             return _shoppingCart.ContainsKey(name) ? _shoppingCart[name] : _inventory.GetOrderItem(name);

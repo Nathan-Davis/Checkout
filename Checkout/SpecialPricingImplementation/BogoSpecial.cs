@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Checkout.Interfaces;
 
-namespace Checkout
+namespace Checkout.SpecialPricingImplementation
 {
-    public class BogoSpecial
+    public class BogoSpecial : ISpecialPricing
     {
         public int QuantityToBuy { get; set; }
 
@@ -16,7 +12,7 @@ namespace Checkout
 
         private decimal _total;
 
-        internal decimal CalculateSpecial(int quantityScanned, decimal currentPrice)
+        public decimal CalculateSpecial(int quantityScanned, decimal currentPrice)
         {
             _total = 0M;
             var quantityLeftOver = quantityScanned - QuantityToBuy;

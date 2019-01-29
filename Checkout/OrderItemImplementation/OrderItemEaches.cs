@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Checkout.Abstracts;
 
-namespace Checkout
+namespace Checkout.OrderItemImplementation
 {
     internal class OrderItemEaches : AOrderItem
     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using Checkout;
+using Checkout.SpecialPricingImplementation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CheckOutUnitTests
@@ -80,6 +81,15 @@ namespace CheckOutUnitTests
             _pointOfSale.AddPricingSpecial("Water", pricingSpecial);
             ScanItemMultipleTimes("Water", 21);
             Assert.AreEqual(_orderTotal, 16M);
+        }
+
+        [TestMethod]
+        public void WhenAnXForYSpecialIsAddedTheOrderTotalIsAdjusted()
+        {
+            var pricingSpecial = new XForYSpecial { QuantityToBuy = 3, SpecialPrice = 10M};
+            _pointOfSale.AddPricingSpecial("Bread", pricingSpecial);
+            ScanItemMultipleTimes("Bread", 8);
+            Assert.AreEqual(_orderTotal, 28.46M);
         }
 
         private static List<PricingSheetItem> GetPricingSheet()
