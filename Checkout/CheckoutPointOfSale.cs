@@ -11,16 +11,13 @@ namespace Checkout
 {
     public class CheckoutPointOfSale
     {
-        private readonly List<PricingSheetItem> _pricingSheet;
-        private readonly Dictionary<string, AOrderItem> _shoppingCart = new Dictionary<string, AOrderItem>();
-
         private readonly Inventory _inventory;
+        private readonly Dictionary<string, AOrderItem> _shoppingCart = new Dictionary<string, AOrderItem>();        
 
         public CheckoutPointOfSale(List<PricingSheetItem> pricingSheet)
         {
             _inventory = new Inventory(pricingSheet);
         }
-
 
         public void AddPricingSpecial(string name, ISpecialPricing pricingSpecial)
         {

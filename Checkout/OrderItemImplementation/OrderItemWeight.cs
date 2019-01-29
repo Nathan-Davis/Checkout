@@ -17,6 +17,10 @@ namespace Checkout.OrderItemImplementation
 
         internal override decimal CalculateTotal()
         {
+            if (SpecialPricing != null)
+            {
+                return SpecialPricing.CalculateSpecial(_weight, GetCurrentPrice());
+            }
             return _weight * GetCurrentPrice();
         }
 

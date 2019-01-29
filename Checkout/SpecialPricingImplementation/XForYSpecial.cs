@@ -7,9 +7,10 @@ namespace Checkout.SpecialPricingImplementation
         public int Limit { get; set; }
         public int QuantityToBuy { get; set; }
         public decimal SpecialPrice { get; set; }
-        public decimal CalculateSpecial(int quantityScanned, decimal currentPrice)
+        public decimal CalculateSpecial(decimal units, decimal currentPrice)
         {
             var total = 0M;
+            var quantityScanned = (int)units;
             if (Limit > 0 && quantityScanned > Limit)
             {
                 total = (quantityScanned - Limit) * currentPrice;
@@ -24,7 +25,7 @@ namespace Checkout.SpecialPricingImplementation
             return total;
         }
 
-        private static decimal CalculatePrice(int quantity, decimal price)
+        private static decimal CalculatePrice(decimal quantity, decimal price)
         {
             return quantity * price;
         }

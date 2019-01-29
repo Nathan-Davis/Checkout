@@ -2,6 +2,6 @@
 {
     public interface ISpecialPricing
     {
-        decimal CalculateSpecial(int quantityScanned, decimal currentPrice);
+        decimal CalculateSpecial(decimal units, decimal currentPrice);
     }
 }

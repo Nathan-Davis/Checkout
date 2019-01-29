@@ -2,15 +2,15 @@
 
 namespace Checkout.SpecialPricingImplementation
 {
-    public class BogoSpecial : ISpecialPricing
+    public class BogoSpecialEaches : ISpecialPricing
     {
         private decimal _total;
         public decimal Discount { get; set; }
-        public int Limit { get; set; }
-        public int QuantityDiscounted { get; set; }
-        public int QuantityToBuy { get; set; }
+        public decimal Limit { get; set; }
+        public decimal QuantityDiscounted { get; set; }
+        public decimal QuantityToBuy { get; set; }
 
-        public decimal CalculateSpecial(int quantityScanned, decimal currentPrice)
+        public decimal CalculateSpecial(decimal quantityScanned, decimal currentPrice)
         {
             _total = 0M;
             quantityScanned = ProcessLimitOnSpecial(quantityScanned, currentPrice);
@@ -26,7 +26,7 @@ namespace Checkout.SpecialPricingImplementation
             return _total;
         }
         
-        private void CalculateAmountOverBundle(int quantityLeftOver, decimal currentPrice)
+        private void CalculateAmountOverBundle(decimal quantityLeftOver, decimal currentPrice)
         {
             quantityLeftOver -= QuantityToBuy;
             _total += QuantityToBuy * currentPrice;
@@ -42,7 +42,7 @@ namespace Checkout.SpecialPricingImplementation
             }
         }
 
-        private void CalculateBogo(int quantityLeftOver, decimal currentPrice)
+        private void CalculateBogo(decimal quantityLeftOver, decimal currentPrice)
         {
             if (quantityLeftOver >= QuantityToBuy)
             {
@@ -54,12 +54,12 @@ namespace Checkout.SpecialPricingImplementation
             }
         }
         
-        private void CalculateNormalPricing(int quantityScanned, decimal currentPrice)
+        private void CalculateNormalPricing(decimal quantityScanned, decimal currentPrice)
         {
             _total += currentPrice * quantityScanned;
         }
 
-        private int ProcessLimitOnSpecial(int quantityScanned, decimal currentPrice)
+        private decimal ProcessLimitOnSpecial(decimal quantityScanned, decimal currentPrice)
         {
             if (Limit > 0 && quantityScanned > Limit)
             {

@@ -6,9 +6,9 @@ namespace Checkout
 {
     internal class Inventory
     {
-        private readonly List<PricingSheetItem> _pricingSheet;
         private readonly Dictionary<string, AOrderItem> _inventory = new Dictionary<string, AOrderItem>();
-
+        private readonly List<PricingSheetItem> _pricingSheet;
+        
         internal Inventory(List<PricingSheetItem> pricingSheet)
         {
             _pricingSheet = pricingSheet;

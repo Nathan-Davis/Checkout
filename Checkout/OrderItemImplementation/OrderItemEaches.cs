@@ -9,11 +9,11 @@ namespace Checkout.OrderItemImplementation
 
         }
 
-        private int _quantity { get; set; }
+        private decimal _quantity;
 
         internal void AddLineItem()
         {
-            _quantity += 1;
+            _quantity += 1M;
         }
 
         internal override decimal CalculateTotal()
@@ -27,7 +27,7 @@ namespace Checkout.OrderItemImplementation
 
         internal override void VoidItem()
         {
-            _quantity -= 1;
+            _quantity -= 1M;
         }
     }
 }
